@@ -1,0 +1,312 @@
+using System;
+using System.Collections;
+using App.package;
+using System.Linq;
+using System.IO;
+
+namespace ConsoleApp2
+{
+    public class Salary
+    {
+        public int basic, da, hra, pf,gross,net;
+        public Salary(int a,int b,int c,int d)
+        {
+            this.basic = a;
+            this.da = b;
+            this.hra = c;
+            this.pf = d;
+            this.gross = a+b+c;
+            this.net = this.gross-d;
+        }
+        
+    }
+   public class Employee
+    {
+        public String employeeName, department, designation;
+        public int employeeId;
+        public Salary salary;
+        public Attendance att = new Attendance(0,0,0);
+        public Employee(int a,string b,string c,string h,int d,int e,int f,int g)
+        {
+            this.employeeId = a;
+            this.employeeName = b;
+            this.department = c;
+            this.designation = h;
+            this.salary = new Salary(d, e, f, g);
+        }
+        public void showDetails()
+        {
+            Console.WriteLine($"The ID of Employee:{this.employeeId}.\nThe Name of Employee:{this.employeeName}.\nThe Department of Employee:{this.department}.\nThe Designation of Employee:{this.designation}.\nThe Salary of Employee:{this.salary.net}");
+        }
+    }
+    public class Manager:Employee
+    {
+        public Employee[] employees;
+        private int k = 0;
+        public int count;
+        public Manager(int a, string b, string c, string h, int d, int e, int f, int g,int n) : base(a, b, c,h, d, e, f, g) { 
+            employees = new Employee[n];
+            this.count = n;
+            
+            
+        }
+        public void addEmployee()
+        {
+            if (k < count)
+            {
+                Console.WriteLine($"Enter the ID of Employee {k + 1}");
+                int id = Convert.ToInt32(Console.ReadLine());
+                Console.WriteLine($"Enter the Name of Employee {k + 1}");
+                string name = Console.ReadLine();
+                Console.WriteLine($"Enter the department of Employee {k + 1}");
+                string department = Console.ReadLine();
+                Console.WriteLine($"Enter the Designation of Employee {k + 1}");
+                string designation = Console.ReadLine();
+                Console.WriteLine($"Enter the basic of Employee {k + 1}");
+                int basic = Convert.ToInt32(Console.ReadLine());
+                Console.WriteLine($"Enter the DA of Employee {k + 1}");
+                int da = Convert.ToInt32(Console.ReadLine());
+                Console.WriteLine($"Enter the HRA of Employee {k + 1}");
+                int hra = Convert.ToInt32(Console.ReadLine());
+                Console.WriteLine($"Enter the PF of Employee {k + 1}");
+                int pf = Convert.ToInt32(Console.ReadLine());
+                employees[k++] = new Employee(id, name, department, designation, basic, da, hra, pf);
+                Console.WriteLine("The new employee is created");
+            }
+            else
+            {
+                Console.WriteLine("Limit Exceeded");
+            }
+        }
+        public Employee getEmployee(int id)
+        {
+            for(int i = 0; i < employees.Length; i++)
+            {
+                if (id == employees[i].employeeId)
+                {
+                    return employees[i];
+                }
+            }
+            return null;
+        }
+        public void getStaff()
+        {
+            this.showDetails();
+            Console.WriteLine();
+            foreach(Employee employee in employees)
+            {
+                employee.showDetails();
+                Console.WriteLine();
+            }
+        }
+        public void markLeave(Employee e)
+        {
+            e.att.leave++;
+        }
+        public void markAbsent(Employee e)
+        {
+            e.att.absent++;
+        }
+        public void markPresent(Employee e)
+        {
+            e.att.present++;
+        }
+    }
+    public class Department
+    {
+        public string departmentName;
+        public Manager manager;
+        public int noOfStaff;
+        public Department(string a,Manager m)
+        {
+            this.departmentName = a;
+            this.manager = m;
+            this.noOfStaff = m.employees.Length;
+        }
+        public Employee getEmployeeFromDepartment(int id)
+        {
+            return manager.getEmployee(id);
+        }
+        public void departmentInformation()
+        {
+            Console.WriteLine($"The department name:{this.departmentName}.\nThe number of staff:{this.noOfStaff}\n");
+            Console.WriteLine("The manager Information");
+            manager.showDetails();
+        }
+       
+    }
+    public class Attendance
+    {
+        public int leave, absent, present;
+        public Attendance(int a,int b,int c)
+        {
+            this.leave = a;
+            this.absent = b;
+            this.present = c;
+        }
+    }
+    internal class Program 
+
+    {
+        public void enterEmployee(Manager a, Manager b, Manager c)
+        {
+            Console.WriteLine("Enter 1 to add employee under Manager A1\nEnter 2 to add employee under Manager A2\nEnter 3 to add employee under Manager A3\n");
+            int ch;
+            while (true)
+            {
+                ch = Convert.ToInt32(Console.ReadLine());
+                switch (ch)
+                {
+                    case 1:
+                        a.addEmployee();
+                        break;
+                    case 2:
+                        b.addEmployee();
+                        break;
+                    case 3:
+                        c.addEmployee();
+                        break;
+                    default:
+                        Console.WriteLine("Enter correct number");
+                        break;
+                }
+                if(ch==1||ch==2||ch==3) break;
+            }
+        }
+
+        public void viewEmployee(Department a, Department b, Department c)
+        {
+            Console.WriteLine("Enter 1 to view employee of Department1\nEnter 2 to view employee of Department2\nEnter 3 to view employee of Department3\n");
+            int id,ch;
+            while (true)
+            {
+                ch = Convert.ToInt32(Console.ReadLine());
+                switch (ch)
+                {
+                    case 1:
+                        Console.WriteLine("Enter the id of Employee");
+                        id = Convert.ToInt32(Console.ReadLine());
+                        a.getEmployeeFromDepartment(id).showDetails();
+                        break;
+                    case 2:
+                        Console.WriteLine("Enter the id of Employee");
+                        id = Convert.ToInt32(Console.ReadLine());
+                        b.getEmployeeFromDepartment(id).showDetails();
+                        break;
+                    case 3:
+                        Console.WriteLine("Enter the id of Employee");
+                        id = Convert.ToInt32(Console.ReadLine());
+                        c.getEmployeeFromDepartment(id).showDetails();
+                        break;
+                    default:
+                        Console.WriteLine("Enter correct number");
+                        break;
+                }
+                if (ch == 1 || ch == 2 || ch == 3) break;
+            }
+        }
+        public void viewManager(Manager a, Manager b, Manager c)
+        {
+            Console.WriteLine("Enter 1 to view Manager A1\nEnter 2 to view Manager A2\nEnter 3 to view Manager A3\n");
+            int ch;
+            while (true)
+            {
+                ch = Convert.ToInt32(Console.ReadLine());
+                switch (ch)
+                {
+                    case 1:
+                       
+                        a.getStaff();
+                        break;
+                    case 2:
+                        
+                        b.getStaff();
+                        break;
+                    case 3:
+                       
+                        c.getStaff();
+                        break;
+                    default:
+                        Console.WriteLine("Enter correct number");
+                        break;
+                }
+                if (ch == 1 || ch == 2 || ch == 3) break;
+            }
+        }
+        public void viewDepartment(Department a, Department b, Department c)
+        {
+            Console.WriteLine("Enter 1 to view Department1\nEnter 2 to view Department2\nEnter 3 to view Department3\n");
+            int ch;
+            while (true)
+            {
+                ch = Convert.ToInt32(Console.ReadLine());
+                switch (ch)
+                {
+                    case 1:
+
+                        a.departmentInformation();
+                        break;
+                    case 2:
+
+                        b.departmentInformation();
+                        break;
+                    case 3:
+
+                        c.departmentInformation();
+                        break;
+                    default:
+                        Console.WriteLine("Enter correct number");
+                        break;
+                }
+                if (ch == 1 || ch == 2 || ch == 3) break;
+            }
+        }
+        static void Main(string[] args)
+        {
+            Program p = new Program();
+
+            Manager m1 = new Manager(1,"A1","department 1","supervisor",100,25,56,45,2);
+            Manager m2 = new Manager(2, "A2", "department 2", "supervisor", 90, 55, 26, 20, 2);
+            Manager m3 = new Manager(3, "A3", "department 3", "supervisor", 200, 24, 60, 10, 2);
+
+            Department d1 = new Department("department 1", m1);
+            Department d2 = new Department("department 2", m2);
+            Department d3 = new Department("department 3", m3);
+
+            int ch;
+            while (true)
+            {
+                Console.WriteLine("\nHello! This is menu");
+                Console.WriteLine("For entering Employee press 1\nFor viewing employee under department press 2\nFor viewing manager information with staff press 3\nFor veiwing department information press 4\nFor exit press 5");
+                ch = Convert.ToInt32(Console.ReadLine());
+                switch (ch)
+                {
+                    case 1:
+                        p.enterEmployee(m1,m2,m3);
+                        break;
+                    case 2:
+                        p.viewEmployee(d1,d2,d3);
+                        break;
+                    case 3:
+                        p.viewManager(m1, m2, m3);
+                        break;
+                    case 4:
+                        p.viewDepartment(d1, d2, d3);
+                        break;
+                    case 5:
+                        Console.WriteLine("BYE");
+                        break;
+                    default:
+                        Console.WriteLine("Please enter correct input");
+                        break;
+                }
+                if (ch == 5) break;
+
+            }
+
+
+            
+        }
+    }
+    
+}
