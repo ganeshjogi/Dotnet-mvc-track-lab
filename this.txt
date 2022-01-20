@@ -1,0 +1,22 @@
+internal class Employee 
+    {
+        string name, des, depart;
+        int sal;
+       public void setDetails(string a,string b,string c,int d)
+        {
+            name = a;
+            des = b;
+            depart = c;
+            sal = d;
+        }
+        public void printDetails()
+        {
+            Console.WriteLine($"the name is {this.name}.\nthe designation is {this.des}\nthe department is {this.depart}.\nthe salary is {this.sal}");
+        }
+       static void Main(string[] args)
+        {
+            Employee p =new Employee();
+            p.setDetails("ghd", "engineer", "software", 2500);
+            p.printDetails();
+        }
+    }

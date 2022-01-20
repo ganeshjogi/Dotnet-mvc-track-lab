@@ -1,0 +1,14 @@
+class Exam
+    {
+        string name, sem;
+        static string exam;
+        public Exam(string a,string b)
+        {
+            name = a;
+            sem = b;
+        }
+        static Exam()
+        {
+            exam = "midterm";
+        }
+    }

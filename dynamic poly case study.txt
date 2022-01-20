@@ -1,0 +1,93 @@
+using System;
+using System.Collections;
+using App.package;
+using System.Linq;
+
+namespace ConsoleApp2
+{
+   public interface Person
+    {
+        public void setDetails();
+        public Person getDetails();
+    }
+
+    public class Employee : Person
+    {
+        private string firstName, lastName, department;
+        public void setDetails()
+        {
+            firstName = Console.ReadLine();
+            lastName = Console.ReadLine();
+            department = Console.ReadLine();
+        }
+        public Person getDetails()
+        {
+            return this;
+        }
+    }
+    public class Trainee : Person
+    {
+        private string firstName, lastName, department;
+        public void setDetails()
+        {
+            firstName = Console.ReadLine();
+            lastName = Console.ReadLine();
+            department = Console.ReadLine();
+        }
+        public Person getDetails()
+        {
+            return this;
+        }
+    }
+    public class Worker : Person
+    {
+        private string firstName, lastName, department;
+        public void setDetails()
+        {
+            firstName = Console.ReadLine();
+            lastName = Console.ReadLine();
+            department = Console.ReadLine();
+        }
+        public Person getDetails()
+        {
+            return this;
+        }
+    }
+    public class Salary
+    {
+        public void calculateSalary(Person p)
+        {
+            if(p is Employee)
+            {
+                Console.WriteLine("Salary for Employee");
+            }
+            else if(p is Trainee)
+            {
+                Console.WriteLine("Salary for Trainee");
+            }
+            else if(p is Worker)
+            {
+                Console.WriteLine("Salary for Worker");
+            }
+        }
+    }
+
+internal class Program 
+    {
+        
+       static void Main(string[] args)
+        {
+            Person e = new Employee();
+            e.setDetails();
+            Person e1 = new Worker();
+            e.setDetails();
+            Person e2 = new Trainee();
+            e.setDetails();
+            Salary salary = new Salary();
+            salary.calculateSalary(e.getDetails());
+            salary.calculateSalary(e1.getDetails());
+            salary.calculateSalary(e2.getDetails());
+
+        }
+    }
+}

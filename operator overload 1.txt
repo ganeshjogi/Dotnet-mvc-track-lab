@@ -1,0 +1,40 @@
+using System;
+using System.Collections;
+using App.package;
+using System.Linq;
+
+namespace ConsoleApp2
+{
+   class Student
+    {
+        string name;
+        float weight;
+        public Student(string a,float b)
+        {
+            name = a;
+            weight = b;
+        }
+        public static bool operator <(Student a,Student b)
+        {
+            return a.weight < b.weight;
+
+        }
+        public static bool operator >(Student a, Student b)
+        {
+            return a.weight>b.weight;
+        }
+    }
+
+
+internal class Program 
+    {
+       static void Main(string[] args)
+        {
+            Student s1 = new Student("dhfg",7f);
+            Student s2 = new Student("fkdjhg",5.3f);
+            bool c = s1 < s2;
+            Console.WriteLine(c);
+
+        }
+    }
+}

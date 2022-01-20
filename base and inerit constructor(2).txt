@@ -1,0 +1,30 @@
+public class Intreset
+    {
+        float amount, rate;
+        public Intreset(float amount,float rate)
+        {
+            this.amount = amount;
+            this.rate = rate;
+        }
+        public void getIntrest()
+        {
+            Console.WriteLine($"{this.amount},{this.rate}");
+        }
+    }
+    public class LoanRate:Intreset
+    {
+        public LoanRate(float amount,float rate):base( amount, rate)
+        {
+            
+
+        }
+    }
+internal class Employee 
+    {
+        
+       static void Main(string[] args)
+        {
+            LoanRate l = new LoanRate(10f,5f);
+            l.getIntrest();
+        }
+    }

@@ -1,0 +1,134 @@
+using System;
+using System.Collections;
+using App.package;
+using System.Linq;
+
+namespace ConsoleApp2
+{
+    public class Item
+    {
+        private string itemname;
+        private float price;
+        private int quantity;
+        public string ItemName
+        {
+            get => itemname;
+            set => itemname = value;
+        }
+        public float Price
+        {
+            get => price;
+            set => price = value;
+        }
+        public int Quantity
+        {
+            get => quantity;
+            set => quantity = value;
+        }
+        public Item(string a,float b,int c)
+        {
+            this.itemname = a;
+            this.price = b;
+            this.quantity = c;  
+        }
+    }
+    public class Order
+    {
+        public int orderno;
+        public Order(int a)
+        {
+            this.orderno = a;
+        }
+        public Item[] itemList = new Item[10];
+        public int i = 0;
+        public string orderdate;
+        public void addItem(Item it)
+        {
+            itemList[i++] = it;
+        }
+        public Item[] getItems()
+        {
+            return itemList;
+        }
+    }
+    public class Stock
+    {
+        public static Item[] items_in_stock = new Item[10];
+        public Stock getStockDetails()
+        {
+            return this;
+        }
+    }
+    public class Purchases
+    {
+        public Order order;
+        public float totalAmount;
+
+        public Purchases(Order o)
+        {
+            this.order = o;
+        }
+        public void calculateTotalAmount()
+        {
+            for (int j = 0; j < order.i; j++)
+            {
+                this.totalAmount += order.itemList[j].Price;
+            }
+        }
+        public void correctStock(Stock s)
+        {
+            order.itemList.CopyTo(Stock.items_in_stock, 0);
+        }
+    }
+    public class Sales
+    {
+        public Order order;
+        public float totalAmount;
+
+        public Sales(Order o)
+        {
+            this.order = o;
+        }
+        public void calculateTotalAmount()
+        {
+            for(int j = 0; j < order.i; j++)
+            {
+                this.totalAmount += order.itemList[j].Price;
+            }
+        }
+        public void correctStock(Stock s)
+        {
+            for (int j = 0; j < order.i; j++)
+            {
+                Stock.items_in_stock = Array.FindAll(Stock.items_in_stock, i => i != order.itemList[j]).ToArray();
+            }
+        }
+    }
+    internal class Program 
+
+    {
+        
+       static void Main(string[] args)
+        {
+            Stock s = new Stock();
+            Order o = new Order(1);
+            o.addItem(new Item("dfhg", 23.4f, 5));
+            o.addItem(new Item("dfhgfg", 235.4f, 45));
+            Item[] items = o.getItems();
+            for(int t=0;t<o.i;t++)
+            {
+                Console.WriteLine($"The name is {items[t].ItemName}");
+                Console.WriteLine($"The price is {items[t].Price}");
+                Console.WriteLine($"The quantity is {items[t].Quantity}");
+            }
+            Purchases p = new Purchases(o);
+            p.calculateTotalAmount();
+            Console.WriteLine(p.totalAmount);
+            p.correctStock(s);
+            Sales sa = new Sales(o);
+            sa.calculateTotalAmount();
+            Console.WriteLine(sa.totalAmount);
+            sa.correctStock(s);
+        }
+    }
+}
