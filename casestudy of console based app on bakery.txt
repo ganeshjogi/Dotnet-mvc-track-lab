@@ -1,0 +1,130 @@
+using System;
+using System.Collections;
+using App.package;
+using System.Linq;
+using System.IO;
+
+namespace ConsoleApp2
+{
+   public class Item
+    {
+        public string itemname;
+        public int price, quantity;
+        public Item(string name,int price,int quantity)
+        {
+            this.itemname = name;
+            this.price = price;
+            this.quantity = quantity;
+        }
+    }
+    public class Menu
+    {
+        public void displayItems(Item[] items)
+        {
+            for(int i = 0; i < items.Length; i++)
+            {
+                Console.WriteLine($"press {i+1} to selcet this item {items[i].itemname}");
+            }
+            
+        }
+    }
+    public class Order
+    {
+        private Item[] itemlist = new Item[5];
+        private int k = 0;
+        private int totalAmount = 0;
+        public void addItemToOrder(Item item)
+        {
+            if (Array.IndexOf(this.itemlist, item) == -1)
+            {
+                this.itemlist[k++] = item;
+                Console.WriteLine("Added");
+            }
+            else
+            {
+                this.itemlist[Array.IndexOf(this.itemlist, item)].quantity++;
+            }
+        }
+        public void DisplayTotalAmount()
+        {
+            Console.WriteLine($"S.No          Name          Quantity     Price     Total");
+            string sb = "";
+            for(int i = 0; i < 49; i++)
+            {
+                sb += "-";
+            }
+            Console.WriteLine(sb);
+            for(int i=0;i<this.k;i++)
+            {
+                this.totalAmount+= this.itemlist[i].price* this.itemlist[i].quantity;
+                Console.WriteLine($"{i + 1}              {this.itemlist[i].itemname}          {this.itemlist[i].quantity}     {this.itemlist[i].price}     {this.itemlist[i].price * this.itemlist[i].quantity}");
+
+            }
+            Console.WriteLine();
+            Console.WriteLine($"The total bill amount is {this.totalAmount} of your order");
+        }
+    }
+    internal class Program 
+
+    {
+        int done=0;
+        public void orderConfirm(Order order)
+        {
+            Console.WriteLine("press 1 to confirm order\npress other number to revert");
+            int ch = Convert.ToInt32(Console.ReadLine());
+            switch (ch)
+            {
+                case 1:
+                    order.DisplayTotalAmount();
+                    this.done = 1;
+                    break;
+                default:
+                    Console.WriteLine("No problem");
+                    break;
+            }
+        }
+       
+        
+        static void Main(string[] args)
+        {
+            Program p = new Program();
+           
+            Item[] items = new Item[5];
+            items[0] = new Item("Cake", 45, 1);
+            items[1] = new Item("Biscuit", 55, 1);
+            items[2] = new Item("Lays", 15, 1);
+            items[3] = new Item("Sweet", 60, 1);
+            items[4] = new Item("Coke", 35, 1);
+
+            Menu menu = new Menu();
+            Order order = new Order();
+            int ch,choice;
+
+            while (true)
+            {
+                Console.WriteLine("Enter 1 to add items\nEnter 2 to checkout order\nEnter 3 to exit");
+                ch = Convert.ToInt32(Console.ReadLine());
+                switch (ch)
+                {
+                    case 1:
+                        menu.displayItems(items);
+                        choice = Convert.ToInt32(Console.ReadLine());
+                        order.addItemToOrder(items[choice - 1]);
+                        break;
+                    case 2:
+                        p.orderConfirm(order);
+                        break;
+                    case 3:
+                        p.done = 1;
+                        break;
+                    default :
+                        Console.WriteLine("Plesae enter correct number");
+                        break;
+                }
+                if (p.done == 1) break;
+            }
+
+        }
+    }
+    
+}
