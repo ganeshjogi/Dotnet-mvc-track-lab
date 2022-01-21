@@ -1,0 +1,65 @@
+using System;
+using System.Collections.Generic;
+using System.Collections;
+using App.package;
+using System.Linq;
+using System.IO;
+
+namespace ConsoleApp2
+{
+   public class Items
+    {
+        string itemname;
+        float price;
+
+        public Items(string name,float price)
+        {
+            this.itemname = name;
+            this.price = price;
+        }
+        public String ItemName { get => itemname;set => itemname = value; }
+        public float Price { get => price; set => price = value; } 
+
+        public override string ToString()
+        {
+            return $"The itemname is {this.itemname} and the price is {this.price}";
+        }
+    }
+   
+    internal class Program 
+
+    {
+          
+        
+        static void Main(string[] args)
+        {
+            ArrayList arr = new ArrayList();
+            Stack<Items> stack = new Stack<Items>();
+
+            arr.Add(new Items("fruit", 50f));
+            arr.Add(new Items("lays", 60f));
+            arr.Add(new Items("cookie", 210f));
+            arr.Add(new Items("sweet", 10f));
+            arr.Add(new Items("chocolate", 100f));
+
+            foreach(var item in arr)
+            {
+                Console.WriteLine(item.ToString());
+            }
+
+            stack.Push(new Items("fruit", 50f));
+            stack.Push(new Items("lays", 60f));
+            stack.Push(new Items("cookie", 210f));
+            stack.Push(new Items("sweet", 10f));
+            stack.Push(new Items("chocolate", 100f));
+
+            Console.WriteLine("Lifo Implementation");
+            for(int i=0; i < 5; i++)
+            {
+                Console.WriteLine(stack.Pop());
+            }
+            
+        }
+    }
+    
+}
