@@ -1,0 +1,150 @@
+using System;
+using System.Collections.Generic;
+using System.Collections;
+using App.package;
+using System.Linq;
+using System.IO;
+
+namespace ConsoleApp2
+{
+    public class Customer
+    {
+        public string customerName, email, shippingAddress, billingAddress;
+        public Customer(string name, string email, string shipAddress, string billAddress)
+        {
+            this.customerName = name;
+            this.email = email;
+            this.shippingAddress = shipAddress;
+            this.billingAddress = billAddress;
+        }
+    }
+    public class Products
+    {
+        public string productName;
+        public int quantity;
+        public float price;
+        public Products(string name, float price, int quantity)
+        {
+            this.productName = name;
+            this.price = price;
+            this.quantity = quantity;
+        }
+
+    }
+    public class Cart
+    {
+        public Customer customer;
+        public List<Products> ProductList = new List<Products>();
+        public float total_amount;
+        public bool status;
+
+        public Cart(Customer customer, List<Products> products)
+        {
+            this.customer = customer;
+            this.ProductList = products;
+            this.status = false;
+        }
+
+        public void confirmOrder(bool status)
+        {
+            this.status = status;
+
+        }
+        public void viewDetails()
+        {
+            int k = 1;
+            Console.WriteLine("Customer Details:");
+            Console.WriteLine($"The Customer name is {this.customer.customerName}\nThe Email of customer is {this.customer.email}\nThe shipping Address is {this.customer.shippingAddress}.\nThe Billing Address is {this.customer.billingAddress}");
+            Console.WriteLine();
+            foreach (var product in this.ProductList)
+            {
+                Console.WriteLine($"Product-{k++} Details");
+                Console.WriteLine($"The name of product is {product.productName}.\nThe price of Product is {product.price}.\nThe quantity of product is {product.quantity}");
+                Console.WriteLine();
+                this.total_amount += product.price;
+            }
+            Console.WriteLine($"Total bill amount is {this.total_amount}");
+            Console.WriteLine();
+        }
+    }
+    public class Order
+    {
+        public List<Cart> cartList = new List<Cart>();
+    }
+
+    internal class Program 
+
+    {
+          
+       
+        static void Main(string[] args)
+        {
+           List<Products> products = new List<Products>();
+            products.Add(new Products("Fruit", 10f, 1));
+            products.Add(new Products("Vegetable", 19f, 1));
+            products.Add(new Products("Chips", 25f, 1));
+
+            List<Products> products1 = new List<Products>();
+            products1.Add(new Products("Sweet", 100f, 1));
+            products1.Add(new Products("Corn", 38f, 1));
+            products1.Add(new Products("Pickle", 99f, 1));
+
+            List<Products> products2 = new List<Products>();
+            products2.Add(new Products("Sweet", 100f, 1));
+            products2.Add(new Products("Vegetable", 19f, 1));
+            products2.Add(new Products("Pickle", 99f, 1));
+
+
+            Customer customer = new Customer("A1", "abc@def.com", "Vellore", "Chennai");
+            Customer customer1 = new Customer("A2", "abcdsf@ddfsef.com", "Chennai", "Velllore");
+            Customer customer2 = new Customer("A3", "abdgcdsf@ddfsef.com", "Banglore", "Dubai");
+
+            Cart cart1 = new Cart(customer,products);
+            cart1.confirmOrder(true);
+            Cart cart2 = new Cart(customer1, products1);
+            cart2.confirmOrder(false);
+            Cart cart3 = new Cart(customer2, products2);
+            cart3.confirmOrder(true);
+
+            List<Cart> cart4 = new List<Cart>();
+            cart4.Add(cart1);
+            cart4.Add(cart2);
+            cart4.Add(cart3);
+
+            Order o = new Order();
+            foreach(Cart c in cart4)
+            {
+                if (c.status)
+                {
+                    o.cartList.Add(c);
+                }
+            }
+
+            int ch;
+            bool bre=false;
+            while (true)
+            {
+                Console.WriteLine("Press 1 for seeing order 1\nPress 2 for seeing order 2\nPress 3 for exit");
+                ch = Convert.ToInt32(Console.ReadLine());
+                switch (ch)
+                {
+                    case 1:
+                        o.cartList[0].viewDetails();
+                        break;
+                    case 2:
+                        o.cartList[1].viewDetails();
+                        break ;
+                    case 3:
+                        bre = true;
+                        break;
+                    default:
+                        Console.WriteLine("Enter correct number");
+                        break;
+                }
+                if (bre == true) break;
+            }
+
+        }
+    }
+    
+}
