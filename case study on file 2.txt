@@ -1,0 +1,60 @@
+using System;
+using System.Collections.Generic;
+using System.Collections;
+using App.package;
+using System.Linq;
+using System.IO;
+
+namespace ConsoleApp2
+{
+    
+
+    internal class Program 
+
+    {
+          
+       
+        static void Main(string[] args)
+        {
+            int ch;
+            bool bre = false;
+            while (true)
+            {
+                Console.WriteLine("Press 1 for Check file\nPress 2 to copy file\nPress 3 to rename file\nPress 4 to exit");
+                ch = Convert.ToInt32(Console.ReadLine());
+                switch (ch)
+                {
+                    case 1:
+                        Console.WriteLine("Enter the file path");
+                        string path = Console.ReadLine();
+                        string result = (File.Exists(path)) ? "The File exists" : "The file does not exist";
+                        Console.WriteLine(result);
+                        break;
+                    case 2:
+                        Console.WriteLine("Enter source path");
+                        string source = Console.ReadLine();
+                        Console.WriteLine("Enter destination path");
+                        string destination = Console.ReadLine();
+                        File.Copy(source, destination);
+                        Console.WriteLine("File is moved");
+                        break;
+                    case 3:
+                        Console.WriteLine("Enter the path of file");
+                        string file = Console.ReadLine();
+                        Console.WriteLine("Enter the new name");
+                        string name = Console.ReadLine();
+                        File.Move (file, name,true);
+                        Console.WriteLine("file is renamed");
+                        break;
+                    case 4:
+                        bre = true;
+                        break;
+                }
+                if (bre == true) break;
+            }
+
+          
+        }
+    }
+    
+}

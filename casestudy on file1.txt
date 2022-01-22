@@ -1,0 +1,48 @@
+using System;
+using System.Collections.Generic;
+using System.Collections;
+using App.package;
+using System.Linq;
+using System.IO;
+
+namespace ConsoleApp2
+{
+    public class Employee
+    {
+        public string name, department;
+        public Employee(string name,string dep)
+        {
+            this.name = name;
+            this.department = dep;
+        }
+        public void AddDetails()
+        {
+            StreamWriter sw = new StreamWriter("G:\\file.txt");
+            sw.WriteLine($"The name of Employee is {this.name}.The Department is {this.department}");
+            sw.Flush();
+            sw.Close();
+        }
+        public void ViewFile()
+        {
+            StreamReader sr = new StreamReader("G:\\file.txt");
+            Console.WriteLine(sr.ReadToEnd());
+            sr.Close();
+
+        }
+    }
+
+    internal class Program 
+
+    {
+          
+       
+        static void Main(string[] args)
+        {
+
+            Employee e1 = new Employee("A1", "agri");
+            e1.AddDetails();
+            e1.ViewFile();
+        }
+    }
+    
+}
