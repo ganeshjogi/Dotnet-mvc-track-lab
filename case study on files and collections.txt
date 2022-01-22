@@ -1,0 +1,309 @@
+using System;
+using System.Collections.Generic;
+using System.Collections;
+using App.package;
+using System.Linq;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+
+namespace ConsoleApp2
+{
+    [Serializable]
+    public class Customer
+    {
+        public string customerName, email, shippingAddress, billingAddress;
+        public int id;
+
+        public void AddCustomer(int id)
+        {
+            Console.WriteLine("Enter the Name of customer");
+            this.customerName = Console.ReadLine();
+            Console.WriteLine("Enter the email of customer");
+            this.email = Console.ReadLine();
+            Console.WriteLine("Enter the Shipping address of customer");
+            this.shippingAddress = Console.ReadLine();
+            Console.WriteLine("Enter the billing address of customer");
+            this.billingAddress = Console.ReadLine();            
+            this.id = id;
+            
+
+
+        }
+        public void viewCustomer()
+        {
+            Console.WriteLine("Customer Details:");
+            Console.WriteLine($"The Customer ID is {this.id}\nThe Customer name is {this.customerName}\nThe Email of customer is {this.email}\nThe shipping Address is {this.shippingAddress}.\nThe Billing Address is {this.billingAddress}");
+        }
+    }
+    [Serializable]
+    public class Products
+    {
+        public string productName;
+        public int quantity;
+        public float price;
+        public Products(string name, float price, int quantity)
+        {
+            this.productName = name;
+            this.price = price;
+            this.quantity = quantity;
+        }
+
+    }
+    [Serializable]
+    public class ProductList
+    {
+        public List<Products> productList = new List<Products> ();
+
+        public void addProduct(Products p)
+        {
+            productList.Add(p);
+        }
+    }
+
+    [Serializable]
+    public class Cart
+    {
+        public Customer customer;
+        public List<Products> ProductList = new List<Products>();
+        public float total_amount;
+        public bool status;
+
+        public Cart(Customer customer, List<Products> products)
+        {
+            this.customer = customer;
+            this.ProductList = products;
+            this.status = false;
+        }
+
+        public void confirmOrder(bool status)
+        {
+            this.status = status;
+
+        }
+        public void viewDetails()
+        {
+            int k = 1;
+            Console.WriteLine("Customer Details:");
+            Console.WriteLine($"The Customer name is {this.customer.customerName}\nThe Email of customer is {this.customer.email}\nThe shipping Address is {this.customer.shippingAddress}.\nThe Billing Address is {this.customer.billingAddress}");
+            Console.WriteLine();
+            foreach (var product in this.ProductList)
+            {
+                Console.WriteLine($"Product-{k++} Details");
+                Console.WriteLine($"The name of product is {product.productName}.\nThe price of Product is {product.price}.\nThe quantity of product is {product.quantity}");
+                Console.WriteLine();
+                this.total_amount += product.price;
+            }
+            Console.WriteLine($"Total bill amount is {this.total_amount}");
+            Console.WriteLine();
+        }
+    }
+
+    [Serializable]
+    public class Order
+    {
+        public List<Cart> cartList = new List<Cart>();
+    }
+    
+    internal class Program
+
+    {
+
+        public static Customer getFile(int id)
+        {
+            var files = Directory.EnumerateFiles("G:\\customers", "*.txt");
+            Stream fs;
+            Customer cust;
+            foreach (string s in files)
+            {
+                fs = File.OpenRead(s);
+                BinaryFormatter br = new BinaryFormatter();
+                cust = (Customer)br.Deserialize(fs);
+                if (cust.id == id)
+                {
+                    return cust;
+                }
+            }
+            return null;
+
+        }
+
+        public List<Products> addToCart(List<Products> pr)
+        {
+            List<Products> temp= new List<Products>();
+            int ch = 0;
+            while (true)
+            {
+                for(int i = 0; i < pr.Count; i++)
+                {
+                    Console.WriteLine($"Press {i} for {pr[i].productName}");
+                }
+                Console.WriteLine($"you will exit if you press {pr.Count}");
+                ch=Convert.ToInt32(Console.ReadLine());
+                if (ch < pr.Count)
+                {
+                    temp.Add(pr[ch]);
+                }
+                else
+                {
+                    break;
+                }    
+            }
+            return temp;
+        }
+        public void customerCart(int id)
+        {
+            
+            Stream fs = File.OpenRead($"G:\\Carts\\cart_{id}.txt");
+            BinaryFormatter br = new BinaryFormatter();
+            Cart c = (Cart)br.Deserialize(fs);
+            c.viewDetails();
+            fs.Flush();
+            fs.Close();
+
+        }
+        public void customerFile(Customer c)
+        {
+            
+            Stream fs = File.OpenWrite($"G:\\Customers\\customer_{c.id}.txt");
+            BinaryFormatter br = new BinaryFormatter();
+            br.Serialize(fs,c);
+            fs.Flush();
+            fs.Close();
+        }
+        public Cart cartFile(Customer c,List<Products> pr)
+        {
+            Cart cart = new Cart(c, pr);
+            
+            Stream fs = File.OpenWrite($"G:\\Carts\\cart_{c.id}.txt");
+            BinaryFormatter bw = new BinaryFormatter();
+            bw.Serialize(fs,cart );
+            fs.Flush();
+            fs.Close();
+            return cart;
+        }
+        public void orderFile(Order o)
+        {
+            Stream fs = File.OpenWrite($"G:\\orders.txt");
+            BinaryFormatter bw = new BinaryFormatter();
+            bw.Serialize(fs, o);
+            fs.Flush();
+            fs.Close();
+        }
+        public void viewOrders()
+        {
+            Stream fs = File.OpenRead($"G:\\orders.txt");
+            BinaryFormatter bw = new BinaryFormatter();
+            Order order = (Order)bw.Deserialize(fs);
+            fs.Flush();
+            fs.Close();
+            foreach(var cart in order.cartList)
+            {
+                cart.viewDetails();
+            }
+        }
+        static void Main(string[] args)
+        {
+            Program p = new Program();
+
+            ProductList list = new ProductList();
+
+            list.addProduct(new Products("Fruit", 10f, 1));
+            list.addProduct(new Products("Vegetable", 19f, 1));
+            list.addProduct(new Products("Chips", 25f, 1));
+            list.addProduct(new Products("Sweet", 100f, 1));
+            list.addProduct(new Products("Sweet", 100f, 1));
+            list.addProduct(new Products("Corn", 38f, 1));
+            list.addProduct(new Products("Pickle", 99f, 1));
+            list.addProduct(new Products("Sweet", 100f, 1));
+            list.addProduct(new Products("Vegetable", 19f, 1));
+            list.addProduct(new Products("Pickle", 99f, 1));
+
+            Stream fs = File.OpenWrite("G:\\ProductsList.txt");
+            BinaryFormatter bw = new BinaryFormatter();
+            bw.Serialize(fs, list.productList);
+            fs.Flush();
+            fs.Close();
+
+            Stream fs1 = File.OpenRead("G:\\ProductsList.txt");
+            BinaryFormatter br = new BinaryFormatter();
+            List<Products> feList = (List<Products>)br.Deserialize(fs1);
+            fs1.Flush();
+            fs1.Close();
+
+            List<Products> temp = new List<Products>();
+
+            Order o = new Order();
+
+            bool bre = false;
+            int ch,id;
+            while (true)
+            {
+                Console.WriteLine("Press 1 to view customers\nPress 2 to add customer\nPress 3 to view cart\nPress 4 to view Orders\npress 5 to view product list\npress 6 to Exit");
+                ch = Convert.ToInt32(Console.ReadLine());
+                switch (ch)
+                {
+                    case 1:
+                        Console.WriteLine("Enter the Id");
+                        id = Convert.ToInt32(Console.ReadLine());
+                        if (Program.getFile(id)==null)
+                        {
+                            Console.WriteLine("No Customer exist with this Id");
+                        }
+                        else
+                        {
+                            Program.getFile(id).viewCustomer();
+                        }
+                        break;
+                    case 2:
+                        Console.WriteLine("Enter the Id");
+                        id = Convert.ToInt32(Console.ReadLine());
+                        if (Program.getFile(id) == null)
+                        {
+                            Customer c = new Customer();
+                            c.AddCustomer(id);
+                            p.customerFile(c);
+                        }
+                        else
+                        {
+                            Console.WriteLine("The customer with this id already exists");
+                        }
+                        break;
+                    case 3:
+                        Console.WriteLine("Enter the Id");
+                        id = Convert.ToInt32(Console.ReadLine());
+                        p.customerCart(id);
+                        break;
+                    case 4:
+                        p.viewOrders();
+                        break;
+                    case 5:
+                        Console.WriteLine("Enter the Id");
+                        id = Convert.ToInt32(Console.ReadLine());
+                        if (Program.getFile(id) == null)
+                        {
+                            Console.WriteLine("No Customer exist with this Id");
+                        }
+                        else
+                        {
+                            temp = p.addToCart(feList);
+                            Cart cart = p.cartFile(Program.getFile(id), temp);
+                            Console.WriteLine("Press 1 to Confirm Order\nPress 2 to reject");
+                            int choice = Convert.ToInt32(Console.ReadLine());
+                            if (choice == 1)
+                            {
+                                cart.status = true;
+                                o.cartList.Add(cart);
+                                p.orderFile(o);
+                            }
+                        }
+                        break;
+                    case 6:
+                        bre = true;
+                        break;
+                }
+                if (bre) break;
+            }
+        }
+    }
+
+}
