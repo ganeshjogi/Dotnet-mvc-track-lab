@@ -1,0 +1,76 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Data;
+using System.Data.SqlClient;
+namespace ConsoleApp3
+{
+    public class SqlConn
+    {
+        SqlConnection conn;
+        SqlCommand cmd;
+        string query;
+
+        public SqlConn(SqlConnection con)
+        {
+            this.conn = con;
+        }
+        public void createTableOrInsertRow(string q)
+        {
+            this.query = q;
+            if(this.conn.State == ConnectionState.Open)
+            {
+               this.cmd = new SqlCommand(this.query, this.conn);
+               int i = this.cmd.ExecuteNonQuery();
+            }       
+
+        }
+        public void displayRows(string s)
+        {
+            this.query = s;
+            if (this.conn.State == ConnectionState.Open)
+            {
+                this.cmd = new SqlCommand(this.query, this.conn);
+                SqlDataReader rd = this.cmd.ExecuteReader();
+                
+                while (rd.Read())
+                {
+                    Console.WriteLine($"Customer No {rd[0]} Customer Name {rd[1]} Customer Address{rd[2]}");
+                }
+            }
+
+        }
+    }
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            SqlConnection conn = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\ganesh\Documents\SampleDB.mdf;Integrated Security=True;Connect Timeout=30");
+            conn.Open();
+            SqlConn sc = new SqlConn(conn);
+            
+            
+            try
+            {
+                sc.createTableOrInsertRow("create table customers(customerid int primary key,customername varchar(20),customerAddress varchar(100))");
+                sc.createTableOrInsertRow("insert into customers values(1,'Jason Rough','23 old street')");
+                sc.createTableOrInsertRow("insert into customers values(2,'William Right','55 baker street')");
+                sc.createTableOrInsertRow("insert into customers values(3,'Edgar Rice Brough','93 walker street')");
+                sc.displayRows("select * from customers");
+                
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                conn.Close();
+            }
+            
+            Console.ReadKey();
+        }
+    }
+}
