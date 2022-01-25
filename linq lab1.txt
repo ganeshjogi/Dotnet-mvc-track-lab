@@ -1,0 +1,64 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Data;
+using System.Xml.Linq;
+using System.Data.SqlClient;
+namespace ConsoleApp3
+{
+    public class Employee
+    {
+        string name, department;
+        float salary;
+        public Employee(string name, string department, float salary)
+        {
+            this.name = name;
+            this.department = department;
+            this.salary = salary;
+        }
+        public string Name { get => name; set => name = value; }
+        public string Department { get => department; set => department = value; }
+        public float Salary { get => salary; set => salary = value; }
+    }
+   
+    internal class Program
+    {
+      
+        static void Main(string[] args)
+        {
+            List<Employee> employees = new List<Employee>();
+
+            employees.Add(new Employee("sghjd", "sales", 160000));
+            employees.Add(new Employee("sgd", "sales", 180000));
+            employees.Add(new Employee("sgjd", "sales", 1600));
+            employees.Add(new Employee("sghjd", "fines", 160));
+            employees.Add(new Employee("sg", "malls", 100));
+            employees.Add(new Employee("s", "sales", 12500));
+            employees.Add(new Employee("sghjd", "electic", 160));
+            employees.Add(new Employee("sjd", "sale", 160000));
+
+            var query1 = from n in employees
+                         where n.Department == "sales" && n.Salary > 15000
+                         select n;
+
+            var query2 = from n in employees
+                         where n.Name.Length <4
+                         select n;
+
+            foreach(var query in query1)
+            {
+                Console.WriteLine($"The name :{query.Name}. The department :{query.Department}. The Salary :{query.Salary}.");
+            }
+            Console.WriteLine();
+            foreach (var query in query2)
+            {
+                Console.WriteLine($"The name :{query.Name}. The department :{query.Department}. The Salary :{query.Salary}.");
+            }
+
+
+        Console.ReadKey();
+        }
+    }
+}
